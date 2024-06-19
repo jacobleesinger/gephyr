@@ -1,10 +1,4 @@
-import duckdb
-
-
-def create_db_connection(path=":memory:"):
-    '''create a connection to a duckdb database'''
-    con = duckdb.connect(path)
-    return con
+from db import create_db_connection
 
 
 def load_parquet_data(db, file_path="./Oct2018-WorkshopCUR-00001.snappy.parquet",):
@@ -22,4 +16,4 @@ def create_db_and_load_data(db_path=":memory:"):
 
 
 if __name__ == "__main__":
-    create_db_and_load_data()
+    create_db_and_load_data('test.db')
