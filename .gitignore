@@ -2,3 +2,4 @@
 .history
 *.parquet
 __pycache__
+*.db
