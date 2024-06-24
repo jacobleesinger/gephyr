@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 
 from db import create_db_connection
 
+
 app = Flask(__name__)
 
 
