@@ -4,21 +4,26 @@ from db import create_db_connection
 
 app = Flask(__name__)
 
-discounts = {
-    'AmazonS3': 0.88,  # 12% off
-    'AmazonEC2': 0.5,  # 50% off
-    'AWSDataTransfer': 0.7,  # 3% off
-    'AWSGlue': 0.95,  # 5% off
-    'AmazonGuardDuty': 0.25,  # 75% off
-}
+
+def get_discount(product_servicecode: str) -> float:
+    '''Get discount by product_servicecode. If no discount is found, return 1'''
+
+    db = create_db_connection('data/test.db')
+
+    result = db.execute(
+        f"SELECT percent_total FROM discounts WHERE product_servicecode = '{product_servicecode}'").fetchall()
+
+    if result:
+        return result[0][0]
+    else:
+        return 1
 
 
 def get_discounted_service_cost(product_servicecode: str) -> float:
     '''Get discounted cost by product_servicecode. If no discount is found, return the undiscounted cost'''
-    discount = discounts.get(product_servicecode)
+
+    discount = get_discount(product_servicecode)
     undiscounted_cost = get_service_cost(product_servicecode)
-    if not discount:
-        return undiscounted_cost
 
     discounted_cost = undiscounted_cost * discount
     return discounted_cost
@@ -96,7 +101,3 @@ def get_blended_rate():
 @app.get('/')
 def home():
     return render_template('index.html')
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
