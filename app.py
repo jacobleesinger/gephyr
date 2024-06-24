@@ -26,9 +26,38 @@ def get_discounted_service_cost(product_servicecode: str) -> float:
 
 def get_service_cost(product_servicecode: str) -> float:
     '''Get undiscounted cost by product_servicecode'''
-    db = create_db_connection('test.db')
+    db = create_db_connection('data/test.db')
     result = db.execute(
         f"SELECT SUM(line_item_unblended_cost) FROM cur WHERE product_servicecode = '{product_servicecode}'").fetchall()
+    return result[0][0]
+
+
+def get_total_undiscounted_cost() -> float:
+    '''Get total undiscounted cost'''
+    db = create_db_connection('data/test.db')
+    result = db.execute(
+        f"SELECT SUM(line_item_unblended_cost) FROM cur").fetchall()
+    return result[0][0]
+
+
+def get_total_discounted_cost() -> float:
+    '''Get total discounted cost'''
+    db = create_db_connection('data/test.db')
+
+    query = """
+        SELECT
+            SUM(
+                c.line_item_unblended_cost * COALESCE(d.percent_total, 1)
+            ) AS total_discounted_cost
+        FROM
+            cur c
+        LEFT JOIN
+            discounts d
+        ON
+            c.product_servicecode = d.product_servicecode;
+        """
+
+    result = db.execute(query).fetchall()
     return result[0][0]
 
 
@@ -47,7 +76,22 @@ def get_cost():
         cost = get_discounted_service_cost(product_servicecode)
     else:
         cost = get_service_cost(product_servicecode)
-    return {'cost': cost}
+    return {'cost': round(cost, 2)}
+
+
+@app.get('/api/blended')
+def get_blended_rate():
+    '''calculates the blended rate for all usage'''
+
+    total_discounted_cost = get_total_discounted_cost()
+    total_undiscounted_cost = get_total_undiscounted_cost()
+
+    blended_rate = 1 - total_discounted_cost / total_undiscounted_cost
+
+    return {
+        'blended_rate': f"{round(blended_rate, 2) * 100}%"
+    }
+
 
 
 if __name__ == "__main__":
