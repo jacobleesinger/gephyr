@@ -1,4 +1,6 @@
 from duckdb import DuckDBPyConnection
+from dotenv import dotenv_values
+
 from db import create_db_connection
 
 
@@ -25,5 +27,13 @@ def create_db_and_load_data(db_path: str, parquet_file_path: str, discounts_file
 
 
 if __name__ == "__main__":
-    create_db_and_load_data(db_path='data/test.db', parquet_file_path='data/Oct2018-WorkshopCUR-00001.snappy.parquet',
+    args = dotenv_values('.env')
+
+    DB_PATH = args['DB_PATH']
+    PARQUET_FILE_PATH = args['PARQUET_FILE_PATH']
+
+    if not DB_PATH or not PARQUET_FILE_PATH:
+        raise ValueError('DB_PATH and PARQUET_FILE_PATH must be set in .env')
+
+    create_db_and_load_data(db_path=DB_PATH, parquet_file_path=PARQUET_FILE_PATH,
                             discounts_file_path='data/discounts.json')
