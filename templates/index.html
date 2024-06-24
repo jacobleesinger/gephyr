@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cost Calculator</title>
+  </head>
+  <body>
+    <h1>Cost Calculator</h1>
+    <form id="product-cost-form">
+      <label for="product-servicecode-input">Product Service Code</label>
+      <input
+        type="text"
+        name="product-servicecode-input"
+        id="product-servicecode-input"
+        required
+      />
+      <label for="use-discount-input">Use Discount</label>
+      <input
+        type="checkbox"
+        name="use-discount-input"
+        id="use-discount-input"
+      />
+      <button type="submit">Calculate</button>
+    </form>
+    <p>Cost: <span id="product-cost-display"></span></p>
+
+    <button type="button" id="blended-rate-button">
+      Calculate Blended Rate
+    </button>
+    <p>Blended Rate: <span id="blended-rate-display"></span></p>
+  </body>
+  <script>
+    const productCostForm = document.getElementById('product-cost-form');
+    const productServicecodeInput = document.getElementById(
+      'product-servicecode-input'
+    );
+    const useDiscountInput = document.getElementById('use-discount-input');
+
+    const productCostDisplay = document.getElementById('product-cost-display');
+
+    const blendedRateDisplay = document.getElementById('blended-rate-display');
+    const blendedRateButton = document.getElementById('blended-rate-button');
+
+    function getProductCost(event) {
+      console.log('handleSubmit');
+      event.preventDefault();
+
+      const productServicecode = productServicecodeInput.value;
+      const useDiscount = useDiscountInput.checked;
+
+      console.log('productServicecode', productServicecode);
+      console.log('useDiscount', useDiscount);
+
+      const result = fetch(
+        `/api/cost?product_servicecode=${productServicecode}&use_discount=${useDiscount}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          productCostDisplay.innerText = data.cost;
+        });
+    }
+
+    function getBlendedRate(event) {
+      console.log('handleBlendedRate');
+      event.preventDefault();
+
+      const result = fetch('/api/blended')
+        .then((response) => response.json())
+        .then((data) => {
+          blendedRateDisplay.innerText = data.blended_rate;
+        });
+    }
+
+    productCostForm.addEventListener('submit', getProductCost);
+    blendedRateButton.addEventListener('click', getBlendedRate);
+  </script>
+</html>

@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, render_template, request
 
 from db import create_db_connection
 
@@ -92,6 +92,10 @@ def get_blended_rate():
         'blended_rate': f"{round(blended_rate, 2) * 100}%"
     }
 
+
+@app.get('/')
+def home():
+    return render_template('index.html')
 
 
 if __name__ == "__main__":
