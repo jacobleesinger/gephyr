@@ -1,0 +1,22 @@
+[
+  {
+    "product_servicecode": "AmazonS3",
+    "percent_total": 0.88
+  },
+  {
+    "product_servicecode": "AmazonEC2",
+    "percent_total": 0.5
+  },
+  {
+    "product_servicecode": "AWSDataTransfer",
+    "percent_total": 0.7
+  },
+  {
+    "product_servicecode": "AWSGlue",
+    "percent_total": 0.95
+  },
+  {
+    "product_servicecode": "AmazonGuardDuty",
+    "percent_total": 0.25
+  }
+]
