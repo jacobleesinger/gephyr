@@ -1,6 +1,6 @@
 # Gephyr
 
-Gephyr is a small application that allows you to import AWS usage data from a parquet file and query it using a web interface or REST API.
+Gephyr is a small application that allows you to import AWS usage data from a parquet file and query it using a web interface or REST API. It uses [DuckDB](https://duckdb.org/) to store the data and [Flask](https://flask.palletsprojects.com/en/3.0.x/) for the web interface and API.
 
 ## Setup
 
